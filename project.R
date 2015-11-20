@@ -56,3 +56,14 @@ pml_write_files = function(x){
     write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
   }
 }
+
+
+#Create model
+
+modelPML <- function() {
+	pml <- readTrainingData()
+	bests <- bestFields( pml )
+	bests <- c( bests, 'classe' )
+	pml.bests <- pml[ bests ]
+	mdl <- train( classe ~ ., method = 'rf', data = pml.bests )
+}
