@@ -2,6 +2,7 @@ library(caret)
 library(dplyr)
 library(GGally)
 
+"Given that the training file has been downloaded, read file into R"
 readTrainingData <- function() {
 	read.csv( "pml-training.csv" )
 }
@@ -26,6 +27,7 @@ filterFields <- function( pml, exercise, classe = TRUE ) {
 }
 
 
+#Given an exercise, pull out fields for prediction.  The fields only available for groups of records (a particular window) will not be used.
 exerciseFields <- function( pml, exercise ) {
 	exs <- filterFields( pml, exercise, FALSE )
 	total <- c()
@@ -36,6 +38,7 @@ exerciseFields <- function( pml, exercise ) {
 }
 
 
+#Given pml training data, pull out the fields to be used for prediction
 bestFields <- function( pml ) {
 	belts <- exerciseFields( pml, 'belt' )
 	arms <- exerciseFields( pml, '_arm' )
@@ -43,4 +46,13 @@ bestFields <- function( pml ) {
 	dumbbells <- exerciseFields( pml, 'dumbbell' )
 
 	c( belts, arms, forearms, dumbbells )
+}
+
+#Writes answers to files to be uploaded
+pml_write_files = function(x){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
 }
