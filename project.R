@@ -61,9 +61,11 @@ pml_write_files = function(x){
 #Create model
 
 modelPML <- function() {
+	print( Sys.time() )
 	pml <- readTrainingData()
 	bests <- bestFields( pml )
 	bests <- c( bests, 'classe' )
 	pml.bests <- pml[ bests ]
 	mdl <- train( classe ~ ., method = 'rf', data = pml.bests )
+	print( Sys.time() )
 }
