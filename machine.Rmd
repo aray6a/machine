@@ -24,9 +24,16 @@ library(caret)
 library(dplyr)
 library(GGally)
 
-#Given that the training file has been downloaded, read file into R
+#given that the training file has been downloaded, read file into r
 readTrainingData <- function() {
-	read.csv( "pml-training.csv" )
+	set.seed(1234)
+	pml <- read.csv( "pml-training.csv" )
+	intrain <- createDataPartition(y=pml$classe, p=0.7, list=F )
+	training <- pml[intrain,]
+	testing <- pml[-intrain,]
+	list( training, testing)
+}
+```
 }
 
 #Given that the test file has been downloaded, read file into R
@@ -93,7 +100,14 @@ bestFields <- function( pml ) {
 
 After filter the fields list above, I then grouped the remain fields by belt, arm, forearm, and dumbbell for plotting.  I show only the belt plot below for brevity.
 
-```{r explore}
+```{r explore, eval = F, fig.width = 10}
+pmls <- readTrainingData()
+pml <- pmls[[1]]
+belts <- filterFields( pml, 'belt' )
+belts[[1]]
+belts
+belts1 <- belts[[1]]
+ggpairs( pml[belts1] )
 
 ```
 
@@ -110,21 +124,13 @@ pml_write_files = function(x){
 }
 ```
 
-```{r crossvalidation}
-#Cross validation
-getTrainingTest <- function( pml ) {
-	inTrain <- createDataPartition(y=pml$Species, p=0.7, list=FALSE)
-	training <- pml[inTrain,]
-	testing <- pml[-inTrain,]
-	list( training, testing)
-}
-```
 
-```{r createmodel, eval = True}
+```{r createmodel, eval = T}
 #Create model
 modelPML <- function() {
 	print( Sys.time() )
-	pml <- readTrainingData()
+	pmls <- readTrainingData()
+	pml <- pmls[[1]]
 	bests <- bestFields( pml )
 	bests <- c( bests, 'classe' )
 	pml.bests <- pml[ bests ]
@@ -133,3 +139,32 @@ modelPML <- function() {
 	mdl
 }
 ```
+
+
+```{r savemodel, eval = F, echo = F}
+finalModel <- modelPML()
+```
+
+
+##In sample/ Out of Sample Error
+
+I calculated the in sample and out of sample error below.
+
+```{r insampleerror}
+pmls <- readTrainingData()
+pml <- pmls[[1]]
+predict( finalModel, pml)
+vals <- predict( finalModel, pml)
+answers <- pml$classe
+table( vals, answers)
+```
+
+```{r outsamplerror}
+mytest <- pmls[[2]]
+testanswers <- mytest$classe
+preds <- predict( finalModel, mytest )
+table( preds, answers)
+table( preds, testanswers)
+```
+
+

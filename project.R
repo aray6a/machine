@@ -3,8 +3,14 @@ library(dplyr)
 library(GGally)
 
 "Given that the training file has been downloaded, read file into R"
+#given that the training file has been downloaded, read file into r
 readTrainingData <- function() {
-	read.csv( "pml-training.csv" )
+	set.seed(1234)
+	pml <- read.csv( "pml-training.csv" )
+	intrain <- createDataPartition(y=pml$classe, p=0.7, list=F )
+	training <- pml[intrain,]
+	testing <- pml[-intrain,]
+	list( training, testing)
 }
 
 readTestData <- function() {
