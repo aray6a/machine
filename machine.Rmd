@@ -1,17 +1,32 @@
+---
+title: Practical Machine Learning Project
+author: Alim Ray
+date: 11/22/2015
+---
+
+
+#Practical Machine Learning
+
+
+```{r}
 library(caret)
 library(dplyr)
 library(GGally)
 
-"Given that the training file has been downloaded, read file into R"
+#Given that the training file has been downloaded, read file into R
 readTrainingData <- function() {
 	read.csv( "pml-training.csv" )
 }
 
+#Given that the test file has been downloaded, read file into R
 readTestData <- function() {
 	read.csv("pml-testing.csv")
 }
+```
 
 
+
+```{r}
 filterFields <- function( pml, exercise, classe = TRUE ) { 
 	exercise <- paste( '_', exercise, sep = '' )
 	exercise_all <- names(pml)[ grepl( exercise, names(pml) ) & !grepl('max|min|kurto|skew|avg|stddev|amplit|total|var', names(pml) ) ]
@@ -40,6 +55,7 @@ exerciseFields <- function( pml, exercise ) {
 	}
 	total
 }
+```
 
 
 #Given pml training data, pull out the fields to be used for prediction
