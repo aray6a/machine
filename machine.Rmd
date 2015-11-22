@@ -94,6 +94,7 @@ bestFields <- function( pml ) {
 After filter the fields list above, I then grouped the remain fields by belt, arm, forearm, and dumbbell for plotting.  I show only the belt plot below for brevity.
 
 ```{r explore}
+
 ```
 
 
@@ -109,6 +110,15 @@ pml_write_files = function(x){
 }
 ```
 
+```{r crossvalidation}
+#Cross validation
+getTrainingTest <- function( pml ) {
+	inTrain <- createDataPartition(y=pml$Species, p=0.7, list=FALSE)
+	training <- pml[inTrain,]
+	testing <- pml[-inTrain,]
+	list( training, testing)
+}
+```
 
 ```{r createmodel, eval = True}
 #Create model
