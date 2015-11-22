@@ -62,6 +62,15 @@ pml_write_files = function(x){
 }
 
 
+#Cross validation
+getTrainingTest <- function( pml ) {
+	inTrain <- createDataPartition(y=pml$Species, p=0.7, list=FALSE)
+	training <- pml[inTrain,]
+	testing <- pml[-inTrain,]
+	list( training, testing)
+}
+
+
 #Create model
 
 modelPML <- function() {

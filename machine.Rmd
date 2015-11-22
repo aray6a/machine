@@ -8,6 +8,17 @@ date: 11/22/2015
 #Practical Machine Learning
 
 
+##Overview
+
+Given data taken from personal activity trackers, we have been asked to create a model to predict the manner in which a group of people did barbell lifts.  The lifts are classified
+into five categories (A, B, C, D, E).  In the end, the model should predict one of the five categories.
+
+
+##Setup
+
+I used the commands below to import the necessary packages and read the data.
+
+
 ```{r}
 library(caret)
 library(dplyr)
@@ -24,9 +35,21 @@ readTestData <- function() {
 }
 ```
 
+##Choosing Fields
 
+Looking at the data, I see that there are fields which combine data over groups of records.  For example, the max_roll_belt has data once for each day (or "window") of measurements.  
+I created functions to exclude these fields from the training data.  I exclude fields with the following prefixes.
 
-```{r}
+- max
+- min
+- kurto
+- skew
+- avg
+- stddev
+- total
+- var
+
+```{r bestfields}
 filterFields <- function( pml, exercise, classe = TRUE ) { 
 	exercise <- paste( '_', exercise, sep = '' )
 	exercise_all <- names(pml)[ grepl( exercise, names(pml) ) & !grepl('max|min|kurto|skew|avg|stddev|amplit|total|var', names(pml) ) ]
@@ -55,8 +78,6 @@ exerciseFields <- function( pml, exercise ) {
 	}
 	total
 }
-```
-
 
 #Given pml training data, pull out the fields to be used for prediction
 bestFields <- function( pml ) {
@@ -67,7 +88,17 @@ bestFields <- function( pml ) {
 
 	c( belts, arms, forearms, dumbbells )
 }
+```
+##Visual exploration
 
+After filter the fields list above, I then grouped the remain fields by belt, arm, forearm, and dumbbell for plotting.  I show only the belt plot below for brevity.
+
+```{r explore}
+```
+
+
+
+```{r createfiles}
 #Writes answers to files to be uploaded
 pml_write_files = function(x){
   n = length(x)
@@ -76,10 +107,11 @@ pml_write_files = function(x){
     write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
   }
 }
+```
 
 
+```{r createmodel, eval = True}
 #Create model
-
 modelPML <- function() {
 	print( Sys.time() )
 	pml <- readTrainingData()
@@ -90,3 +122,4 @@ modelPML <- function() {
 	print( Sys.time() )
 	mdl
 }
+```
