@@ -7,6 +7,10 @@ readTrainingData <- function() {
 	read.csv( "pml-training.csv" )
 }
 
+readTestData <- function() {
+	read.csv("pml-testing.csv")
+}
+
 
 filterFields <- function( pml, exercise, classe = TRUE ) { 
 	exercise <- paste( '_', exercise, sep = '' )
@@ -61,9 +65,12 @@ pml_write_files = function(x){
 #Create model
 
 modelPML <- function() {
+	print( Sys.time() )
 	pml <- readTrainingData()
 	bests <- bestFields( pml )
 	bests <- c( bests, 'classe' )
 	pml.bests <- pml[ bests ]
-	mdl <- train( classe ~ ., method = 'rf', data = pml.bests )
+	mdl <- train( classe ~ ., method = 'rf', preprocess = c('BoxCox', 'pca'), data = pml.bests )
+	print( Sys.time() )
+	mdl
 }
